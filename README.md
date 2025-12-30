@@ -1,2 +1,2 @@
-# Devops-Project
-Devops-Project
+# CI-CD
+This is Simple ci-cd project
