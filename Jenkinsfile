@@ -48,6 +48,30 @@ pipeline{
                 sh 'docker push amarkumar3/amarkumar'
             }
         }
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh '''
+                echo "🚀 Deploying to Kubernetes..."
+                microk8s.kubectl apply -f $DEPLOY_FILE
+                echo "Waiting for pods to stabilize..."
+                sleep 20
+                microk8s.kubectl get pods
+                '''
+            }
+        }
         
     }
+    
+    post {
+        success {
+            echo '✅ CI/CD pipeline executed successfully. App deployed and accessible via Ingress.'
+        }
+        failure {
+            echo '❌ Build or deploy failed. Please review Jenkins logs.'
+        }
+        aborted {
+            echo '⚠️ Pipeline aborted by user.'
+        }
+    }
 }
+
