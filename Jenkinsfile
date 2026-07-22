@@ -5,6 +5,9 @@ pipeline{
         jdk 'java-11'
         maven 'maven'
     }
+    environment {
+        DEPLOY_FILE  = 'deploy.yml'
+    }
     
     stages{
         stage('Git-checkout'){
