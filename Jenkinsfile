@@ -7,6 +7,7 @@ pipeline{
     }
     environment {
         DEPLOY_FILE  = 'deploy.yml'
+        DOMAIN       = 'dev.amarbelure.online'
     }
     
     stages{
@@ -33,7 +34,7 @@ pipeline{
         stage('Containerisation'){
             steps{
                 sh '''
-                docker run -it -d --name c1 -p 9008:8080 amarkumar3/amarkumar
+                docker run -it -d --name c2 -p 9008:8080 amarkumar3/amarkumar
                 '''
             }
         }
@@ -62,7 +63,20 @@ pipeline{
                 '''
             }
         }
-        
+        stage('Apply Ingress & Verify') {
+            steps {
+                sh '''
+                echo "🌐 Applying Ingress for domain $DOMAIN ..."
+                microk8s.kubectl apply -f $DEPLOY_FILE
+                echo "Waiting for ingress to be ready..."
+                sleep 20
+                microk8s.kubectl get ingress
+                echo "🔍 Verifying application availability..."
+                curl -I http://$DOMAIN || echo "⚠️ Could not verify via curl, please check browser."
+                echo "✅ Deployment complete! Access: http://$DOMAIN"
+                '''
+            }
+        }        
     }
     
     post {
