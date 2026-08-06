@@ -1,7 +1,7 @@
 FROM nginx:stable-alpine
 
 # Copy your local static website files to the default Nginx HTML directory
-COPY ./html /usr/share/nginx/html
+COPY ./index.html /usr/share/nginx/html
 
 # Optional: Copy a custom configuration file if you need one
 # COPY ./nginx.conf /etc/nginx/conf.d/default.conf
